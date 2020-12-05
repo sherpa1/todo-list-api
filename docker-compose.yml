@@ -1,28 +1,33 @@
-version: '3'
-services:
-  strapi:
-    image: strapi/strapi
-    environment:
-      DATABASE_CLIENT: mysql
-      DATABASE_HOST: mariadb
-      DATABASE_PORT: 3306
-      DATABASE_NAME: strapi
-      DATABASE_USERNAME: strapi
-      DATABASE_PASSWORD: strapi
-      DATABASE_SSL: 'false'
-    volumes:
-      - ./app:/srv/app
-    ports:
-      - '1337:1337'
-    depends_on:
-      - mariadb
+version: "3"
 
-  mariadb:
-    image: mariadb
+services:
+  todolist.api:
+    container_name: todolist.api
+    image: node
+    ports:
+      - "3000:3000"
     volumes:
-      - ./data:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: strapi
-      MYSQL_DATABASE: strapi
-      MYSQL_USER: strapi
-      MYSQL_PASSWORD: strapi
+      - ./api:/app/api
+      - ./api/node_modules:/app/api/up/node_modules
+    working_dir: /app/api
+    env_file:
+      - ./api/.env.dev
+    command: bash -c 'npm i && npm run dev'
+    links:
+      - todolist.db
+  todolist.db:
+    container_name: todolist.db
+    image: mariadb
+    restart: unless-stopped
+    env_file:
+      - ./mariadb/.env
+    volumes:
+      - ./mariadb_data:/var/lib/mysql
+  todolist.adminer:
+    container_name: todolist.adminer
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - 9090:8080
+    links:
+      - todolist.db
