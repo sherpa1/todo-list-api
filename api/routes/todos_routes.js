@@ -11,24 +11,49 @@ let all_items, one_item;
 const table = 'todos';
 const base_url = `${host}:${dist_port}/${table}`;
 
+const {from_http_to_sql,format_key_value} = require("../utils/REST/query");
+
 //toutes les requêtes nécessitent de disposer d'un token
 const { isAuthorized, decodePayload } = require("../middlewares/BearerChecker");
 router.use(isAuthorized);
 
+
 //GET ALL TODOS
 router.get('/', async (req, res, next) => {
 
+    let { conditions, order_by, limit, offset } = from_http_to_sql(req.query);
+
+    let count_query = `SELECT COUNT(${table}.id) as count FROM ${table} ${conditions}`;
+
+    let result;
+    let total = 0;
+    let total_pages = 0;
+    let current_page = req.query.page || 1;
+
     try {
-        all_items = await DBClient.all(`SELECT * FROM ${table}`);
+        result = await DBClient.one(count_query);
+        total = result.count;
+    } catch (error) {
+        throw new Error(error);
+    }
+
+    total_pages = Math.round(total / limit);
+
+    try {
+        let sql = `SELECT * FROM ${table} ${conditions}`;
+        if(order_by){
+            sql += ` ${order_by}`;
+        }
+        all_items = await DBClient.all(sql);
     } catch (error) {
         throw new Error(error);
     }
 
     res.status(200).location(req.path).json(
         {
-            total_items: all_items.length,
-            total_pages: 1,
-            page: 1,
+            total_items: total,
+            total_pages: total_pages,
+            page: current_page,
             page_size: all_items.length,
             type: table,
             links: [
