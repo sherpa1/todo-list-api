@@ -10,7 +10,7 @@ module.exports = class DBClient {
         return new Promise((resolve, reject) => {
             db.query(query, (err, result, next) => {
                 if (err) {
-                    reject(err.message);
+                    reject(err);
                 } else {
                     resolve(result.rows);
                 }
@@ -22,7 +22,7 @@ module.exports = class DBClient {
         return new Promise((resolve, reject) => {
             db.query(query, (err, result, next) => {
                 if (err) {
-                    reject(err.message);
+                    reject(err);
                 } else {
                     resolve(result);
                 }
@@ -34,7 +34,7 @@ module.exports = class DBClient {
         return new Promise((resolve, reject) => {
             db.query(query, (err, result, next) => {
                 if (err) {
-                    reject(err.message);
+                    reject(err);
                 } else {
                     resolve(result[0]);
                 }
@@ -46,7 +46,7 @@ module.exports = class DBClient {
         return new Promise((resolve, reject) => {
             db.query(query, (err, result, next) => {
                 if (err) {
-                    reject(err.message);
+                    reject(err);
                 } else {
                     resolve(result);
                 }
