@@ -4,6 +4,9 @@ const router = express.Router();
 const {local_port,dist_port,host} = require("../config/env");
 const DBClient = require('../utils/DB/DBClient');
 
+//toutes les requêtes nécessitent de disposer d'un token
+const { isAuthorized } = require("../middlewares/BearerChecker");
+router.use(isAuthorized);
 
 let all_items, one_item;
 

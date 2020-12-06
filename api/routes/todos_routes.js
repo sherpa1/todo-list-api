@@ -1,4 +1,5 @@
 const express = require('express');
+const { default: validator } = require('validator');
 const router = express.Router();
 
 const {local_port,dist_port,host} = require("../config/env");
@@ -9,6 +10,10 @@ let all_items, one_item;
 
 const table = 'todos';
 const base_url = `${host}:${dist_port}/${table}`; 
+
+//toutes les requêtes nécessitent de disposer d'un token
+const { isAuthorized } = require("../middlewares/BearerChecker");
+router.use(isAuthorized);
 
 //GET ALL TODOS
 router.get('/', async (req, res, next) => {
@@ -154,6 +159,18 @@ router.get('/user/:user_id', async (req, res, next) => {
             data: all_items 
         }
     );
+});
+
+
+req.post("/",async(req,res,next)=>{
+    if(validator.isEmpty(req.body.title))
+    return res.status(400).json({ message: "missing title" });
+
+    if(validator.isEmpty(req.body.content))
+    return res.status(400).json({ message: "missing content" });
+
+
+    const {title, body, content, deadline} = req.body;
 });
 
 module.exports = router;

@@ -6,6 +6,7 @@ const DBClient = require('../utils/DB/DBClient');
 
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
+const { isAuthorized } = require('../middlewares/BearerChecker');
 const saltRounds = 10;
 
 
@@ -13,9 +14,6 @@ let all_items, one_item;
 
 const table = 'users';
 const base_url = `${host}:${dist_port}/${table}`;
-
-
-
 
 router.post('/', async (req, res, next) => {
 
@@ -78,7 +76,7 @@ router.post('/', async (req, res, next) => {
 });
 
 //GET ALL USERS
-router.get('/', async (req, res, next) => {
+router.get('/', isAuthorized, async (req, res, next) => {
 
     try {
         all_items = await DBClient.all(`SELECT * FROM ${table}`);
@@ -106,7 +104,7 @@ router.get('/', async (req, res, next) => {
 });
 
 //GET USER BY ID
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', isAuthorized, async (req, res, next) => {
 
     if (!req.params.id || req.params.id == undefined || req.params.id == 0) return res.status(401).location(req.path).json({ message: "Missing user id" });
 
@@ -158,7 +156,7 @@ router.get('/:id', async (req, res, next) => {
 });
 
 //GET USER BY ID AND TODOS
-router.get('/:id/todos', async (req, res, next) => {
+router.get('/:id/todos', isAuthorized, async (req, res, next) => {
 
     if (!req.params.id || req.params.id == undefined || req.params.id == 0) return res.status(401).location(req.path).json({ message: "Missing user id" });
 
@@ -202,7 +200,7 @@ router.get('/:id/todos', async (req, res, next) => {
 });
 
 //GET USER BY ID AND TAGS
-router.get('/:id/tags', async (req, res, next) => {
+router.get('/:id/tags', isAuthorized, async (req, res, next) => {
 
     if (!req.params.id || req.params.id == undefined || req.params.id == 0) return res.status(401).location(req.path).json({ message: "Missing user id" });
 
