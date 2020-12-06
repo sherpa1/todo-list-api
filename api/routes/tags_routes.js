@@ -4,14 +4,16 @@ const router = express.Router();
 const {local_port,dist_port,host} = require("../config/env");
 const DBClient = require('../utils/DB/DBClient');
 
-//toutes les requêtes nécessitent de disposer d'un token
-const { isAuthorized } = require("../middlewares/BearerChecker");
-router.use(isAuthorized);
+const validator = require("validator");
 
 let all_items, one_item;
 
 const table = 'tags';
 const base_url = `${host}:${dist_port}/${table}`; 
+
+//toutes les requêtes nécessitent de disposer d'un token
+const { isAuthorized, decodePayload } = require("../middlewares/BearerChecker");
+router.use(isAuthorized);
 
 //GET ALL TAGS
 router.get('/', async (req, res, next) => {
@@ -156,6 +158,31 @@ router.get('/user/:user_id', async (req, res, next) => {
             data: all_items 
         }
     );
+});
+
+router.post("/",async(req,res,next)=>{
+    if(validator.isEmpty(req.body.name))
+    return res.status(400).json({ message: "missing name" });
+
+    const token = req.headers.authorization;
+
+    let payload = decodePayload(token);
+
+    const {id} = payload;
+    let {name} = req.body;
+
+    try {
+        const sql = `
+        INSERT INTO ${table} 
+        (name, user_id) 
+        VALUES('${name}', ${id})`;
+
+        await DBClient.query(sql)
+        res.status(201).location(`${base_url}${req.path}`).json({message:"Tag created"});
+    } catch (error) {
+        res.status(500).location(`${base_url}${req.path}`).json({message:error});
+    }
+
 });
 
 module.exports = router;

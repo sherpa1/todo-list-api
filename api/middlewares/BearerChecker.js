@@ -10,7 +10,7 @@ module.exports.isAuthorized = function isAuthorized(req, res, next) {
 
         if (!validator.isJWT(token)) return res.status(401).json({ code: 401, error: "Not Authorized", error_description: "Token is not valid" });
 
-        const jwt_private_key = fs.readFileSync('jwt_private.key');
+        const jwt_private_key = process.env["JWT_KEY"];
 
         jwt.verify(token, jwt_private_key, { algorithm: "HS256" }, (err, user) => {
 
@@ -28,3 +28,12 @@ module.exports.isAuthorized = function isAuthorized(req, res, next) {
         return res.status(400).json({ code: 401, error: "Not Authorized", error_description: "Missing Credentials" });
     }
 }
+
+module.exports.decodePayload = (token) => {
+    if(token !== null || token !== undefined){
+     const base64String = token.split('.')[1];
+     const decodedValue = JSON.parse(Buffer.from(base64String,'base64').toString('ascii'));
+     return decodedValue;
+    }
+    return null;
+  }
