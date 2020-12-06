@@ -1,9 +1,5 @@
 const mysql = require('mysql');
 
-const ENV = process.env.NODE_ENV;
-const END_POINT = process.env['END_POINT'];
-const PORT = process.env['PORT'];
-
 const DB_HOST = process.env['DB_HOST'];
 const DB_NAME = process.env['DB_NAME'];
 const DB_USER = process.env['DB_USER'];
@@ -21,7 +17,7 @@ db.connect(function (err) {
 
     if (err) throw err;
 
-    console.log(`Connection to DB "${DB_NAME}"`);
+    console.log(`Successful connection to DB "${DB_NAME}"`);
 
 });
 

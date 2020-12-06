@@ -54,5 +54,28 @@ module.exports = class DBClient {
         });
     }
 
+    static async truncate(){
+        
+        const query=`
+        SET FOREIGN_KEY_CHECKS=0;
+        truncate users;
+        truncate todos;
+        truncate tags;
+        truncate tags_todos;
+        SET FOREIGN_KEY_CHECKS=1;
+        `;
+
+        return new Promise((resolve, reject) => {
+            db.query(query, (err, result, next) => {
+                if (err) {
+                    reject(err.message);
+                } else {
+                    resolve(result);
+                }
+            })
+        });
+
+    }
+
 
 }

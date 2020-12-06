@@ -51,7 +51,10 @@ const tags_routes = require("./routes/tags_routes");
 app.use("/tags",tags_routes);
 
 const users_routes = require("./routes/users_routes");
-app.use("/users",tags_routes);
+app.use("/users",users_routes);
+
+const auth_routes = require("./routes/auth_routes");
+app.use("/auth",auth_routes);
 
 
 //middleware permettant de traiter les erreurs 404
@@ -63,6 +66,6 @@ const error_handler = require("./middlewares/error_handler");
 app.use(error_handler);
 
 app.listen(local_port, async () => {
-    console.log(`Retrograming Wiki API listening at ${host}:${local_port}`);
+    console.log(`Todo List API listening at ${host}:${local_port}`);
 });
 
