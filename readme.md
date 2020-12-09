@@ -1,6 +1,6 @@
 # TODO LIST API
 
-Une simple API Rest de Todo List
+Une simple API REST exposant des services autour du concept de Todo List, réalisée dans le cadre de l'enseignement du développement d'API REST implémentées au sein d'architectures Micro Services mises en place avec Docker et consommées par tous types de clients (Web, Mobile...).
 
 ![logo Todo List API](./api/assets/to-do-list.png "Logo Todo List API")
 
@@ -32,11 +32,11 @@ Icons made by Freepik from www.flaticon.com
 
 ---
 
-Alexandre Leroux
+__Alexandre Leroux__
 
 alex@sherpa.one
 
-Enseignant vacataire à l'Université de Lorraine
+_Enseignant vacataire à l'Université de Lorraine_
 
 - IUT Nancy-Charlemagne (LP Ciasie)
 
