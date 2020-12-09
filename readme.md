@@ -2,7 +2,7 @@
 
 Une simple API REST exposant des services autour du concept de Todo List, réalisée dans le cadre de l'enseignement du développement d'API REST avec Node.js, implémentées au sein d'architectures Micro Services mises en place avec Docker et consommées par tous types de clients (Web, Mobile...).
 
-![logo Todo List API](./api/assets/to-do-list.png "Logo Todo List API")
+![logo Todo List API](./assets/to-do-list.png "Logo Todo List API")
 
 ## Configuration
 
