@@ -2,7 +2,7 @@
 
 Une simple API Rest de Todo List
 
-![logo Todo List API width="100"](./api/assets/to-do-list.png "Logo Todo List API")
+![logo Todo List API](./api/assets/to-do-list.png "Logo Todo List API")
 
 ## Configuration
 
