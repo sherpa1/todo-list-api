@@ -1,5 +1,17 @@
 # TODO LIST API
 
+Une simple API Rest de Todo List
+
+## Commandes
+
+### Démarrage des services
+
+```
+docker-compose up
+```
+
+
+
 ---
 
 Alexandre Leroux
