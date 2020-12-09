@@ -13,11 +13,7 @@ const logger = require('morgan');
 const cors = require('cors')
 const bodyParser = require('body-parser');
 const helmet = require('helmet')
-//const compression = require('compression');
-const { CustomException, errorHandler } = require('./middlewares/error_handler');
-const expressSession = require("express-session");
 const csrf = require('csurf');
-const { check, validationResult } = require('express-validator');
 
 
 app.use(cors());
@@ -42,7 +38,7 @@ app.use(logger('dev'));
 
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-//app.use(compression);
+app.use(compression);
 
 
 const index_routes = require("./routes/index_routes");
