@@ -2,6 +2,8 @@
 
 Une simple API Rest de Todo List
 
+![logo Todo List API width="100"](./api/assets/to-do-list.png "Logo Todo List API")
+
 ## Configuration
 
 - Créer un fichier ./api/.env.dev et un fichier ./api/.env.prod et renseigner les variables d'environnement suivantes : 
@@ -24,7 +26,9 @@ Une simple API Rest de Todo List
 docker-compose up
 ```
 
+## Crédits
 
+Icons made by Freepik from www.flaticon.com
 
 ---
 
