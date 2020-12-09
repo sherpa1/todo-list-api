@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-const {local_port,dist_port,host} = require("../config/env");
+const {LOCAL_PORT,DIST_PORT,HOST} = require("../config/env");
 
-const base_url = `${host}:${dist_port}/`; 
+const base_url = `${HOST}:${DIST_PORT}/`; 
 
 router.get('/', async (req, res, next) => {
     res.status(200).location(req.path).json(
@@ -35,22 +35,30 @@ router.get('/', async (req, res, next) => {
 });
 
 
-const allowed_http_verbs = [];
+// router.use((req, res, next)=> {
 
-router.stack.forEach(route=>{
-    try {
-        const verb = route.route.stack[0].method;
+//     const allowed_http_verbs = [];
 
-        if (!allowed_http_verbs.includes(verb)) allowed_http_verbs.push(verb);
+//     router.stack.forEach(route => {
 
-    } catch (error) {
-        console.error(error);
-    }
-})
+//         let verb;
 
-router.use(function(req, res, next) {
-    res.append('Allow', allowed_http_verbs.toString());
-    return res.status(405).json({message:"Method Not Allowed"});
-});
+//         try {
+
+//             if (route.route != undefined) {
+
+//                 verb = route.route.stack[0].method;
+
+//                 if (!allowed_http_verbs.includes(verb)) allowed_http_verbs.push(verb);
+//             }
+
+//         } catch (error) {
+//             console.error(error);
+//         }
+//     })
+
+//     res.append('Allow', allowed_http_verbs.toString());
+//     return res.status(405).json({ message: "Method Not Allowed" });
+// });
 
 module.exports = router;

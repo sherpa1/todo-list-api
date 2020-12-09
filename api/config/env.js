@@ -1,5 +1,6 @@
-const local_port = process.env.LOCAL_PORT || 3000;
-const dist_port = process.env.DIST_PORT || 3000;
-const host = process.env.HOST || "http://localhost";
+const LOCAL_PORT = process.env.LOCAL_PORT || 3000;
+const DIST_PORT = process.env.DIST_PORT || 3000;
+const HOST = process.env.HOST || "http://localhost";
+const JWT_KEY = process.env.JWT_KEY;
 
-module.exports = {local_port,dist_port,host};
+module.exports = { LOCAL_PORT, DIST_PORT, HOST, JWT_KEY };

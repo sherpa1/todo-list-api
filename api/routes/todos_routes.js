@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { local_port, dist_port, host } = require("../config/env");
+const { LOCAL_PORT, DIST_PORT, HOST } = require("../config/env");
 const DBClient = require('../utils/DB/DBClient');
 
 const validator = require("validator");
@@ -9,12 +9,12 @@ const validator = require("validator");
 let all_items, one_item;
 
 const table = 'todos';
-const base_url = `${host}:${dist_port}/${table}`;
+const base_url = `${HOST}:${DIST_PORT}/${table}`;
 
-const {from_http_to_sql,format_key_value} = require("../utils/REST/query");
+const { from_http_to_sql, format_key_value } = require("../utils/REST/query");
 
 //toutes les requêtes nécessitent de disposer d'un token
-const { isAuthorized, decodePayload } = require("../middlewares/BearerChecker");
+const { isAuthorized, decodePayload } = require("../middlewares/Token");
 router.use(isAuthorized);
 
 
@@ -41,7 +41,7 @@ router.get('/', async (req, res, next) => {
 
     try {
         let sql = `SELECT * FROM ${table} ${conditions}`;
-        if(order_by){
+        if (order_by) {
             sql += ` ${order_by}`;
         }
         all_items = await DBClient.all(sql);
@@ -186,13 +186,13 @@ router.get('/user/:user_id', async (req, res, next) => {
     );
 });
 
-
+//ADD TODO
 router.post("/", async (req, res, next) => {
     if (validator.isEmpty(req.body.title))
         return res.status(400).json({ message: "missing title" });
 
-    if (validator.isEmpty(req.body.content))
-        return res.status(400).json({ message: "missing content" });
+    // if (validator.isEmpty(req.body.content))
+    //     return res.status(400).json({ message: "missing content" });
 
     const token = req.headers.authorization;
 
@@ -202,6 +202,8 @@ router.post("/", async (req, res, next) => {
     let { title, content, done, deadline, tags, new_tags } = req.body;
 
     try {
+        //at creation, done = 0 by default
+        //content can be null
         let sql =
             `INSERT INTO ${table} (title, content, user_id, created_at, done, deadline) 
         VALUES('${title}', '${content}', ${id}, NOW(), 0, '${deadline}')`;
@@ -263,6 +265,7 @@ router.post("/", async (req, res, next) => {
 
 });
 
+//UPDATE TODO
 router.put("/:id", async (req, res, next) => {
     if (validator.isEmpty(req.body.title))
         return res.status(400).json({ message: "missing title" });
@@ -342,6 +345,8 @@ router.put("/:id", async (req, res, next) => {
 
 });
 
+
+//DELETE TODO
 router.delete("/:id", async (req, res, next) => {
 
     if (validator.isEmpty(req.params.id))
@@ -366,23 +371,31 @@ router.delete("/:id", async (req, res, next) => {
 
 });
 
-const allowed_http_verbs = [];
+// router.use((req, res, next)=> {
 
-router.stack.forEach(route=>{
-    try {
-        const verb = route.route.stack[0].method;
+//     const allowed_http_verbs = [];
 
-        if (!allowed_http_verbs.includes(verb)) allowed_http_verbs.push(verb);
+//     router.stack.forEach(route => {
 
-    } catch (error) {
-        console.error(error);
-    }
-})
+//         let verb;
 
-router.use(function(req, res, next) {
-    res.append('Allow', allowed_http_verbs.toString());
-    return res.status(405).json({message:"Method Not Allowed"});
-});
+//         try {
+
+//             if (route.route != undefined) {
+
+//                 verb = route.route.stack[0].method;
+
+//                 if (!allowed_http_verbs.includes(verb)) allowed_http_verbs.push(verb);
+//             }
+
+//         } catch (error) {
+//             console.error(error);
+//         }
+//     })
+
+//     res.append('Allow', allowed_http_verbs.toString());
+//     return res.status(405).json({ message: "Method Not Allowed" });
+// });
 
 
 module.exports = router;

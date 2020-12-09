@@ -7,9 +7,9 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./api:/app/api
-      - ./api/node_modules:/app/api/up/node_modules
-    working_dir: /app/api
+      - ./api:/usr/src/api
+      - ./api/node_modules:/app/outside/node_modules
+    working_dir: /usr/src/api
     env_file:
       - ./api/.env.dev
     command: bash -c 'npm i && npm run dev'
@@ -18,7 +18,6 @@ services:
   todolist.db:
     container_name: todolist.db
     image: mariadb
-    restart: unless-stopped
     env_file:
       - ./mariadb/.env
     volumes:
@@ -26,7 +25,6 @@ services:
   todolist.adminer:
     container_name: todolist.adminer
     image: adminer
-    restart: unless-stopped
     ports:
       - 9090:8080
     links:

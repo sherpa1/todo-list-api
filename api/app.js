@@ -1,9 +1,11 @@
 'use strict';
 
+const compression = require('compression');
+
 const express = require('express');
 const app = express();
 
-const {local_port,host} = require("./config/env");
+const {LOCAL_PORT,HOST} = require("./config/env");
 
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -23,6 +25,8 @@ app.use(cors());
 app.set('trust proxy', 1);
 
 app.use(helmet());
+
+app.use(compression());
 
 app.disable('x-powered-by');
 
@@ -58,14 +62,15 @@ app.use("/auth",auth_routes);
 
 
 //middleware permettant de traiter les erreurs 404
-const error_404 = require("./middlewares/error_404");
-app.use(error_404);
+// const error_404 = require("./middlewares/error_404");
+// app.use(error_404);
+
 
 //middleware permettant de gérer de façon homogène toutes les erreurs retournées par le serveur
 const error_handler = require("./middlewares/error_handler");
 app.use(error_handler);
 
-app.listen(local_port, async () => {
-    console.log(`Todo List API listening at ${host}:${local_port}`);
+app.listen(LOCAL_PORT, async () => {
+    console.log(`Todo List API listening at ${HOST}:${LOCAL_PORT}`);
 });
 

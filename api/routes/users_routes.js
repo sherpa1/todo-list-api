@@ -1,19 +1,19 @@
 const express = require('express');
 const router = express.Router();
 
-const { local_port, dist_port, host } = require("../config/env");
+const { LOCAL_PORT, DIST_PORT, HOST } = require("../config/env");
 const DBClient = require('../utils/DB/DBClient');
 
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
-const { isAuthorized } = require('../middlewares/BearerChecker');
+const { isAuthorized } = require('../middlewares/Token');
 const saltRounds = 10;
 
 
 let all_items, one_item;
 
 const table = 'users';
-const base_url = `${host}:${dist_port}/${table}`;
+const base_url = `${HOST}:${DIST_PORT}/${table}`;
 
 router.post('/', async (req, res, next) => {
 
@@ -244,22 +244,30 @@ router.get('/:id/tags', isAuthorized, async (req, res, next) => {
 });
 
 
-const allowed_http_verbs = [];
+// router.use((req, res, next)=> {
 
-router.stack.forEach(route=>{
-    try {
-        const verb = route.route.stack[0].method;
+//     const allowed_http_verbs = [];
 
-        if (!allowed_http_verbs.includes(verb)) allowed_http_verbs.push(verb);
+//     router.stack.forEach(route => {
 
-    } catch (error) {
-        console.error(error);
-    }
-})
+//         let verb;
 
-router.use(function(req, res, next) {
-    res.append('Allow', allowed_http_verbs.toString());
-    return res.status(405).json({message:"Method Not Allowed"});
-});
+//         try {
+
+//             if (route.route != undefined) {
+
+//                 verb = route.route.stack[0].method;
+
+//                 if (!allowed_http_verbs.includes(verb)) allowed_http_verbs.push(verb);
+//             }
+
+//         } catch (error) {
+//             console.error(error);
+//         }
+//     })
+
+//     res.append('Allow', allowed_http_verbs.toString());
+//     return res.status(405).json({ message: "Method Not Allowed" });
+// });
 
 module.exports = router;

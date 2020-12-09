@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { local_port, dist_port, host } = require("../config/env");
+const { LOCAL_PORT, DIST_PORT, HOST } = require("../config/env");
 const DBClient = require('../utils/DB/DBClient');
 
 const validator = require("validator");
@@ -10,12 +10,12 @@ const jwt = require('jsonwebtoken');
 const jwt_duration = 3;
 const jwt_expiration = 3600 * jwt_duration;//convert hour in seconds
 
-const jwt_private_key = process.env["JWT_KEY"];
+const {JWT_KEY} = require('../config/env');
 
 const bcrypt = require('bcryptjs');
 
 const table = 'auth';
-const base_url = `${host}:${dist_port}/${table}`;
+const base_url = `${HOST}:${DIST_PORT}/${table}`;
 
 
 router.post('/', async (req, res, next) => {
@@ -78,7 +78,7 @@ router.post('/', async (req, res, next) => {
                     id: user.id
                 }
                 ,
-                jwt_private_key,
+                JWT_KEY,
                 { algorithm: 'HS256', expiresIn: jwt_expiration }
             );
 
@@ -114,23 +114,30 @@ router.post('/', async (req, res, next) => {
 
 });
 
+router.use((req, res, next) => {
 
-const allowed_http_verbs = [];
+    const allowed_http_verbs = [];
 
-router.stack.forEach(route=>{
-    try {
-        const verb = route.route.stack[0].method;
+    router.stack.forEach(route => {
 
-        if (!allowed_http_verbs.includes(verb)) allowed_http_verbs.push(verb);
+        let verb;
 
-    } catch (error) {
-        console.error(error);
-    }
-})
+        try {
 
-router.use(function(req, res, next) {
+            if (route.route != undefined) {
+
+                verb = route.route.stack[0].method;
+
+                if (!allowed_http_verbs.includes(verb)) allowed_http_verbs.push(verb);
+            }
+
+        } catch (error) {
+            console.error(error);
+        }
+    })
+
     res.append('Allow', allowed_http_verbs.toString());
-    return res.status(405).json({message:"Method Not Allowed"});
+    return res.status(405).json({ message: "Method Not Allowed" });
 });
 
 module.exports = router;
