@@ -22,7 +22,7 @@ app.set('trust proxy', 1);
 
 app.use(helmet());
 
-app.use(compression());
+//app.use(compression());
 
 app.disable('x-powered-by');
 
@@ -38,7 +38,7 @@ app.use(logger('dev'));
 
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(compression);
+//app.use(compression);
 
 
 const index_routes = require("./routes/index_routes");
